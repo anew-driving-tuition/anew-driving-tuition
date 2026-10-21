@@ -152,6 +152,29 @@
   <!-- BOOKING SECTION -->
   <section id="booking" class="py-16 px-4 max-w-4xl mx-auto">
     <div class="glass-panel neon-border rounded-3xl p-6 sm:p-10">
+      
+      <!-- DYNAMIC AVAILABILITY TIMETABLE -->
+      <div class="mb-10">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-cyan-400"></i>
+              <span>Live Availability Timetable</span>
+            </h3>
+            <p class="text-xs text-gray-400">Select an available green slot to pre-fill your booking below.</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="flex items-center gap-1.5 text-emerald-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Available</span>
+            <span class="flex items-center gap-1.5 text-red-400"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Taken</span>
+          </div>
+        </div>
+
+        <!-- Interactive 5-Day Availability Cards -->
+        <div id="availability-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+          <div class="col-span-full text-center py-6 text-gray-400 text-sm">Loading real-time availability...</div>
+        </div>
+      </div>
+
       <div class="text-center max-w-xl mx-auto mb-8">
         <h2 class="text-3xl font-extrabold text-white mb-2">Book Your Driving Slot</h2>
         <p class="text-gray-400 text-sm">Instant Google Sheet logging, email confirmations, and automated WhatsApp dispatch.</p>
@@ -356,16 +379,83 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // 2. DATA PIPELINE (LOCAL DB + GOOGLE SCRIPT + DIRECT WHATSAPP)
+    // 2. DATA PIPELINE & GOOGLE APPS SCRIPT URL
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0xBGEIgH7zsFVFiy8mvELDALeVhlQg_onRMmtj4wlX1zsKugAbHP38HycHzhc0U2Z/exec";
     const DB_KEY = "anew_driving_lessons_db";
+    const SLOTS = [
+      "09:00 AM - 11:00 AM",
+      "11:30 AM - 01:30 PM",
+      "02:00 PM - 04:00 PM",
+      "04:30 PM - 06:30 PM"
+    ];
 
+    // Default min date to tomorrow
     const dateInput = document.getElementById('cust-date');
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     dateInput.min = tomorrow.toISOString().split('T')[0];
     dateInput.value = tomorrow.toISOString().split('T')[0];
 
+    // 3. RENDER DYNAMIC AVAILABILITY TIMETABLE
+    async function renderAvailabilityGrid() {
+      const grid = document.getElementById("availability-grid");
+      if (!grid) return;
+
+      let booked = [];
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL + "?action=get_slots");
+        booked = await res.json();
+      } catch (err) {
+        console.warn("Using local cache / empty list for slot checks", err);
+      }
+
+      grid.innerHTML = "";
+      const today = new Date();
+
+      for (let d = 1; d <= 5; d++) {
+        const targetDate = new Date();
+        targetDate.setDate(today.getDate() + d);
+
+        // Skip Sundays
+        if (targetDate.getDay() === 0) continue;
+
+        const dateStr = targetDate.toISOString().split("T")[0];
+        const displayDay = targetDate.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+
+        const dayCol = document.createElement("div");
+        dayCol.className = "glass-panel p-3 rounded-xl border border-gray-800 flex flex-col gap-2";
+        dayCol.innerHTML = `<p class="text-xs font-bold text-center text-cyan-300 pb-1 border-b border-gray-800">${displayDay}</p>`;
+
+        SLOTS.forEach(slot => {
+          const isTaken = Array.isArray(booked) && booked.some(b => b.date === dateStr && b.slot === slot);
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `w-full text-[11px] py-2 px-1 rounded-lg font-medium transition text-center ${
+            isTaken 
+              ? "bg-red-950/40 text-red-400 border border-red-500/20 cursor-not-allowed opacity-60" 
+              : "bg-emerald-950/30 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-black cursor-pointer"
+          }`;
+
+          btn.innerText = isTaken ? `${slot.split(" - ")[0]} (Booked)` : slot.split(" - ")[0];
+
+          if (!isTaken) {
+            btn.onclick = () => {
+              document.getElementById("cust-date").value = dateStr;
+              document.getElementById("cust-slot").value = slot;
+              document.getElementById("booking-form").scrollIntoView({ behavior: "smooth" });
+            };
+          } else {
+            btn.disabled = true;
+          }
+
+          dayCol.appendChild(btn);
+        });
+
+        grid.appendChild(dayCol);
+      }
+    }
+
+    // 4. LOCAL DATABASE HELPERS
     function loadLocalBookings() {
       return JSON.parse(localStorage.getItem(DB_KEY) || "[]");
     }
@@ -398,6 +488,7 @@
       });
     }
 
+    // 5. FORM SUBMISSION + GOOGLE CLOUD + WHATSAPP REDIRECT
     async function handleFormSubmission(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -453,6 +544,9 @@
       submitBtn.disabled = false;
       document.getElementById('booking-form').reset();
 
+      // Refresh slot timetable to reflect any new updates
+      renderAvailabilityGrid();
+
       // Alert & Trigger WhatsApp
       alert(`🎉 Booking Request Received!\nDetails saved locally and sent to the instructor's Google Sheet.\nOpening direct WhatsApp chat now to finalize...`);
       window.open(directWhatsAppUrl, "_blank");
@@ -483,6 +577,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       renderTable();
+      renderAvailabilityGrid();
     });
   </script>
 </body>
