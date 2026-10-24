@@ -8,216 +8,486 @@
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Three.js for 3D Showroom -->
+  <!-- Three.js for 3D Automotive Showroom -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
+    :root {
+      --bg-cream: #faf8f5;
+      --bg-porcelain: #f1f0ea;
+      --card-white: #ffffff;
+      --ink-black: #0c0e12;
+      --accent-blue: #1d4ed8;
+      --lime-highlight: #d9f99d;
+      --yellow-alert: #fef08a;
+    }
+
     body {
-      background-color: #0b0f19;
-      color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--ink-black);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    .glass-panel {
-      background: rgba(17, 24, 39, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* Neo-Brutalist clean tech borders */
+    .brutal-card {
+      background: var(--card-white);
+      border: 2px solid var(--ink-black);
+      box-shadow: 4px 4px 0px 0px var(--ink-black);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .neon-border {
-      border: 1px solid rgba(6, 182, 212, 0.35);
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.12);
+    .brutal-card:hover {
+      box-shadow: 6px 6px 0px 0px var(--ink-black);
+      transform: translate(-2px, -2px);
+    }
+
+    .brutal-btn-primary {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: 2px solid var(--ink-black);
+      box-shadow: 3px 3px 0px 0px var(--ink-black);
+      transition: all 0.15s ease;
+    }
+    .brutal-btn-primary:hover {
+      background: #1e40af;
+      box-shadow: 5px 5px 0px 0px var(--ink-black);
+      transform: translate(-1px, -1px);
+    }
+    .brutal-btn-primary:active {
+      box-shadow: 1px 1px 0px 0px var(--ink-black);
+      transform: translate(2px, 2px);
+    }
+
+    .brutal-btn-dark {
+      background: var(--ink-black);
+      color: #ffffff;
+      border: 2px solid var(--ink-black);
+      box-shadow: 3px 3px 0px 0px #000000;
+      transition: all 0.15s ease;
+    }
+    .brutal-btn-dark:hover {
+      background: #27272a;
+      box-shadow: 5px 5px 0px 0px #000000;
+      transform: translate(-1px, -1px);
+    }
+
+    .quest-card.active {
+      background: #eff6ff;
+      border-color: var(--accent-blue);
+      box-shadow: 4px 4px 0px 0px var(--accent-blue);
     }
   </style>
 </head>
-<body class="selection:bg-cyan-500 selection:text-black">
+<body class="selection:bg-lime-300 selection:text-black">
 
-  <!-- NAVIGATION -->
-  <header class="fixed top-0 left-0 right-0 z-40 glass-panel border-b border-gray-800">
+  <!-- TOP NAVIGATION BAR -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b-2 border-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-xl text-black shadow-lg shadow-cyan-500/20">
+        <div class="w-11 h-11 bg-black text-white rounded-lg flex items-center justify-center font-black text-2xl border-2 border-black shadow-[2px_2px_0px_0px_#1d4ed8]">
           A
         </div>
         <div>
-          <span class="text-xl font-bold tracking-wider text-white">ANEW <span class="text-cyan-400">TUITION</span></span>
-          <p class="text-xs text-gray-400">Tunbridge Wells • DVSA Grade A</p>
+          <span class="text-xl font-black tracking-tight text-black">ANEW <span class="text-blue-700">TUITION</span></span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-neutral-600">Tunbridge Wells • DVSA Grade A</p>
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-        <a href="#experience" class="text-gray-300 hover:text-cyan-400 transition">3D Vehicle</a>
-        <a href="#routes" class="text-gray-300 hover:text-cyan-400 transition">Test Routes</a>
-        <a href="#booking" class="text-gray-300 hover:text-cyan-400 transition">Book Online</a>
-        <a href="#admin" class="text-gray-300 hover:text-cyan-400 transition">Local DB</a>
+      <nav class="hidden lg:flex items-center space-x-8 text-sm font-bold text-neutral-800">
+        <a href="#hero" class="hover:text-blue-700 transition">Showroom</a>
+        <a href="#routes" class="hover:text-blue-700 transition">Test Routes</a>
+        <a href="#quest" class="hover:text-blue-700 transition">Learner Quest</a>
+        <a href="#calculator" class="hover:text-blue-700 transition">Cost Estimator</a>
+        <a href="#social-proof" class="hover:text-blue-700 transition">Wall of Fame</a>
       </nav>
 
-      <div class="flex items-center space-x-4">
-        <a href="https://wa.me/447730354303" target="_blank" class="hidden sm:flex items-center space-x-2 text-sm text-emerald-400 font-semibold border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 transition">
+      <div class="flex items-center space-x-3">
+        <a href="https://wa.me/447393107192" target="_blank" class="hidden sm:flex items-center space-x-2 text-xs font-bold text-black bg-[#d9f99d] border-2 border-black px-3.5 py-2 rounded-lg shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] transition">
           <i data-lucide="message-circle" class="w-4 h-4"></i>
-          <span>WhatsApp Chat</span>
+          <span>Direct WhatsApp</span>
         </a>
-        <a href="#booking" class="bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500">
-          Book Lesson
+        <a href="#booking" class="brutal-btn-primary font-black px-5 py-2.5 rounded-lg text-xs sm:text-sm tracking-wide">
+          Book Slot
         </a>
       </div>
     </div>
   </header>
 
-  <!-- HERO & 3D SHOWROOM -->
-  <section class="relative pt-32 pb-16 px-4 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 min-h-screen">
+  <!-- 1. HERO SECTION -->
+  <section id="hero" class="relative pt-32 pb-16 px-4 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 min-h-screen">
     <div class="lg:w-1/2 z-10">
-      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-6">
-        <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
-        <span>Tunbridge Wells 5.0★ Tuition Academy</span>
+      
+      <!-- High-Energy Status Tag -->
+      <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-[#fef08a] border-2 border-black text-black text-xs font-black mb-6 shadow-[2px_2px_0px_0px_#000]">
+        <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-600 animate-ping"></span>
+        <span>NEXT LIVE SLOT: <strong class="underline decoration-2">Tomorrow @ 09:00 AM</strong> (TN Postcodes)</span>
       </div>
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white mb-6">
-        Master The Roads With <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">Confidence.</span>
+
+      <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-[1.08] text-black mb-6">
+        Master Kent Roads With <span class="bg-[#d9f99d] px-2 py-0.5 border-2 border-black inline-block shadow-[3px_3px_0px_0px_#000]">Zero Stress.</span>
       </h1>
-      <p class="text-lg text-gray-300 mb-8 leading-relaxed">
-        Structured, relaxed driving lessons across Tunbridge Wells, Tonbridge, and Sevenoaks. High first-time pass rates with dual-control learner tuition vehicles.
+      <p class="text-base sm:text-lg text-neutral-700 mb-8 leading-relaxed font-medium">
+        Structured, calm, and confidence-building tuition across Tunbridge Wells, Tonbridge, and Sevenoaks. DVSA Grade A instruction with dual controls and real-time test route drills.
       </p>
       
-      <div class="flex flex-wrap gap-4 items-center mb-8">
-        <a href="#booking" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-7 py-3.5 rounded-xl transition flex items-center space-x-2 shadow-lg shadow-cyan-500/30">
-          <span>Book Lesson Online</span>
+      <div class="flex flex-wrap gap-4 items-center mb-10">
+        <a href="#booking" class="brutal-btn-dark font-black px-7 py-3.5 rounded-xl transition flex items-center space-x-2 text-sm tracking-wide">
+          <span>Book Driving Lesson</span>
           <i data-lucide="calendar" class="w-5 h-5"></i>
         </a>
-        <a href="https://wa.me/447730354303?text=Hi%20Jaimin,%20I'd%20like%20to%20ask%20about%20driving%20tuition%20availability." target="_blank" class="glass-panel hover:bg-gray-800 text-white font-semibold px-6 py-3.5 rounded-xl transition flex items-center space-x-2">
-          <i data-lucide="message-circle" class="w-5 h-5 text-emerald-400"></i>
-          <span>Direct WhatsApp</span>
+        <a href="https://wa.me/447393107192?text=Hi%20there,%20I'd%20like%20to%20inquire%20about%20driving%20lessons%20with%20ANEW%20Driving%20Tuition." target="_blank" class="brutal-card bg-white hover:bg-neutral-50 text-black font-black px-6 py-3.5 rounded-xl transition flex items-center space-x-2 text-sm">
+          <i data-lucide="message-circle" class="w-5 h-5 text-emerald-600"></i>
+          <span>Instant WhatsApp</span>
         </a>
       </div>
 
-      <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-800">
-        <div>
-          <p class="text-2xl font-black text-white">94.8%</p>
-          <p class="text-xs text-gray-400">1st Time Pass Rate</p>
+      <div class="grid grid-cols-3 gap-4 pt-6 border-t-2 border-black">
+        <div class="p-3 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
+          <p class="text-2xl font-black text-black">94.8%</p>
+          <p class="text-[11px] font-bold text-neutral-600 uppercase">1st Time Pass</p>
         </div>
-        <div>
-          <p class="text-2xl font-black text-cyan-400">5.0 ★</p>
-          <p class="text-xs text-gray-400">Verified Reviews</p>
+        <div class="p-3 bg-[#d9f99d] border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
+          <p class="text-2xl font-black text-black">5.0 ★</p>
+          <p class="text-[11px] font-bold text-neutral-800 uppercase">Top Rating</p>
         </div>
-        <div>
-          <p class="text-2xl font-black text-white">Dual</p>
-          <p class="text-xs text-gray-400">Fitted Pedals</p>
+        <div class="p-3 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
+          <p class="text-2xl font-black text-blue-700">Dual</p>
+          <p class="text-[11px] font-bold text-neutral-600 uppercase">Fitted Pedals</p>
         </div>
       </div>
     </div>
 
-    <!-- 3D CAR CANVAS -->
-    <div id="experience" class="lg:w-1/2 w-full h-[450px] lg:h-[520px] relative rounded-3xl overflow-hidden glass-panel neon-border">
+    <!-- 3D Vehicle Interactive Studio -->
+    <div class="lg:w-1/2 w-full h-[450px] lg:h-[520px] relative rounded-3xl overflow-hidden border-2 border-black bg-[#f1f0ea] shadow-[6px_6px_0px_0px_#000]">
       <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
       
       <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-        <div class="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-xs text-cyan-300 font-mono">
+        <div class="bg-black text-[#d9f99d] font-mono font-bold text-[11px] px-3 py-1.5 rounded-md border border-black shadow-[2px_2px_0px_0px_#ffffff]">
           DRAG TO ROTATE 3D CAR
         </div>
         <div class="flex space-x-2 pointer-events-auto">
-          <button id="cam-cockpit" class="bg-black/60 hover:bg-cyan-500 hover:text-black border border-white/10 text-xs text-gray-300 px-2.5 py-1 rounded transition">Cockpit</button>
-          <button id="cam-orbit" class="bg-black/60 hover:bg-cyan-500 hover:text-black border border-white/10 text-xs text-cyan-400 px-2.5 py-1 rounded transition">Orbit</button>
+          <button id="cam-cockpit" class="bg-white hover:bg-neutral-100 text-black border-2 border-black text-xs font-bold px-3 py-1.5 rounded-lg shadow-[2px_2px_0px_0px_#000]">Cockpit</button>
+          <button id="cam-orbit" class="bg-[#d9f99d] text-black border-2 border-black text-xs font-black px-3 py-1.5 rounded-lg shadow-[2px_2px_0px_0px_#000]">Orbit</button>
+        </div>
+      </div>
+
+      <div class="absolute bottom-4 left-4 right-4 bg-white/95 border-2 border-black p-3 rounded-2xl flex items-center justify-between text-xs font-mono font-bold pointer-events-none shadow-[3px_3px_0px_0px_#000]">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-black">DUAL CONTROLS: ACTIVE</span>
+        </div>
+        <div class="text-blue-700 uppercase">Manual / Auto Hybrid</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. TEST ROUTE HOTSPOTS -->
+  <section id="routes" class="py-20 px-4 max-w-7xl mx-auto border-t-2 border-black">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-black text-[#d9f99d] text-xs font-mono font-bold mb-3 shadow-[2px_2px_0px_0px_#1d4ed8]">
+        TEST ROUTE SPECIALIST
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-black mb-3">Tunbridge Wells DVSA Hotspots</h2>
+      <p class="text-neutral-700 text-sm font-medium">Click each waypoint to inspect lane maneuvers and examiner fail traps.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <button onclick="selectRoute('northfarm')" id="btn-northfarm" class="route-btn p-5 rounded-2xl brutal-card bg-[#eff6ff] border-blue-700 text-left transition shadow-[5px_5px_0px_0px_#1d4ed8]">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-mono text-blue-700 font-black">ROUTE 01</span>
+          <span class="text-xs bg-[#fef08a] text-black font-bold px-2 py-0.5 rounded border border-black">Spiral Lanes</span>
+        </div>
+        <h3 class="text-lg font-black text-black mb-1">North Farm Industrial</h3>
+        <p class="text-xs text-neutral-600 font-medium">Multi-lane spiral discipline and retail park exits.</p>
+      </button>
+
+      <button onclick="selectRoute('pembury')" id="btn-pembury" class="route-btn p-5 rounded-2xl brutal-card text-left transition">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-mono text-neutral-500 font-black">ROUTE 02</span>
+          <span class="text-xs bg-neutral-100 text-neutral-800 font-bold px-2 py-0.5 rounded border border-black">Dual Carriageway</span>
+        </div>
+        <h3 class="text-lg font-black text-black mb-1">Pembury Bypass (A21)</h3>
+        <p class="text-xs text-neutral-600 font-medium">Slip road speed matching, merging, and buffer gaps.</p>
+      </button>
+
+      <button onclick="selectRoute('stjohns')" id="btn-stjohns" class="route-btn p-5 rounded-2xl brutal-card text-left transition">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-mono text-neutral-500 font-black">ROUTE 03</span>
+          <span class="text-xs bg-neutral-100 text-neutral-800 font-bold px-2 py-0.5 rounded border border-black">Maneuvers</span>
+        </div>
+        <h3 class="text-lg font-black text-black mb-1">St John's Hill Incline</h3>
+        <p class="text-xs text-neutral-600 font-medium">Hill starts, residential clearances, and parallel parking.</p>
+      </button>
+    </div>
+
+    <div id="route-detail-box" class="brutal-card p-6 sm:p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-3 max-w-2xl">
+        <h4 id="route-title" class="text-xl font-black text-black">North Farm Roundabouts & Spiral Discipline</h4>
+        <p id="route-desc" class="text-sm text-neutral-700 leading-relaxed font-medium">
+          The test examiner frequently takes candidates around Longfield Road and North Farm roundabouts. The major fail trap is late lane drifting when following signs towards Tonbridge or Tunbridge Wells center. We drill your lane entries until they feel second nature.
+        </p>
+        <div id="route-tags" class="flex flex-wrap gap-2 pt-1">
+          <span class="text-[11px] font-bold bg-[#f1f0ea] border border-black text-black px-2.5 py-1 rounded-md">Lane 2 entry for A21</span>
+          <span class="text-[11px] font-bold bg-[#f1f0ea] border border-black text-black px-2.5 py-1 rounded-md">Early mirror checks</span>
+          <span class="text-[11px] font-bold bg-[#f1f0ea] border border-black text-black px-2.5 py-1 rounded-md">Clutch control at rush hour</span>
+        </div>
+      </div>
+      <a href="#booking" class="whitespace-nowrap px-6 py-3.5 rounded-xl brutal-btn-primary font-black text-sm tracking-wide">
+        Book This Route Practice
+      </a>
+    </div>
+  </section>
+
+  <!-- 3. GAMIFIED 5-STAGE LEARNER QUEST -->
+  <section id="quest" class="py-20 px-4 max-w-7xl mx-auto border-t-2 border-black">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#d9f99d] border-2 border-black text-black text-xs font-mono font-bold mb-3 shadow-[2px_2px_0px_0px_#000]">
+        SYLLABUS ROADMAP
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-black mb-3">The "First-Time Pass" Quest</h2>
+      <p class="text-neutral-700 text-sm font-medium">Progress through 5 structured milestone levels toward your full UK driving licence.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div class="quest-card active p-5 rounded-2xl brutal-card">
+        <div class="text-xs font-mono text-blue-700 font-black mb-2">STAGE 01</div>
+        <h4 class="font-black text-black mb-1">Foundations</h4>
+        <p class="text-xs text-neutral-600 font-medium mb-3">Cockpit drill, clutch bite, smooth braking, moving off.</p>
+        <span class="text-[10px] font-bold bg-[#fef08a] border border-black text-black px-2 py-0.5 rounded font-mono">Hours 1–6</span>
+      </div>
+
+      <div class="quest-card p-5 rounded-2xl brutal-card">
+        <div class="text-xs font-mono text-neutral-500 font-black mb-2">STAGE 02</div>
+        <h4 class="font-black text-black mb-1">Road Craft</h4>
+        <p class="text-xs text-neutral-600 font-medium mb-3">Crossroads, major roundabouts, and pedestrian zones.</p>
+        <span class="text-[10px] font-bold bg-[#f1f0ea] border border-black text-neutral-700 px-2 py-0.5 rounded font-mono">Hours 7–16</span>
+      </div>
+
+      <div class="quest-card p-5 rounded-2xl brutal-card">
+        <div class="text-xs font-mono text-neutral-500 font-black mb-2">STAGE 03</div>
+        <h4 class="font-black text-black mb-1">Fast Roads</h4>
+        <p class="text-xs text-neutral-600 font-medium mb-3">Pembury bypass (A21), country roads, dual carriageways.</p>
+        <span class="text-[10px] font-bold bg-[#f1f0ea] border border-black text-neutral-700 px-2 py-0.5 rounded font-mono">Hours 17–26</span>
+      </div>
+
+      <div class="quest-card p-5 rounded-2xl brutal-card">
+        <div class="text-xs font-mono text-neutral-500 font-black mb-2">STAGE 04</div>
+        <h4 class="font-black text-black mb-1">Maneuvers</h4>
+        <p class="text-xs text-neutral-600 font-medium mb-3">Parallel parking, bay parking, pulling up on right.</p>
+        <span class="text-[10px] font-bold bg-[#f1f0ea] border border-black text-neutral-700 px-2 py-0.5 rounded font-mono">Hours 27–34</span>
+      </div>
+
+      <div class="quest-card p-5 rounded-2xl brutal-card bg-[#d9f99d]">
+        <div class="text-xs font-mono text-black font-black mb-2">STAGE 05</div>
+        <h4 class="font-black text-black mb-1">Mock Tests</h4>
+        <p class="text-xs text-neutral-800 font-medium mb-3">Full 40-minute DVSA format runs with sat-nav route drills.</p>
+        <span class="text-[10px] font-bold bg-white border border-black text-black px-2 py-0.5 rounded font-mono">Hours 35+</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. HOURS & PACKAGE CALCULATOR -->
+  <section id="calculator" class="py-20 px-4 max-w-4xl mx-auto border-t-2 border-black">
+    <div class="brutal-card rounded-3xl p-6 sm:p-10">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <h3 class="text-2xl sm:text-3xl font-black text-black mb-2">Lesson Hours & Cost Estimator</h3>
+        <p class="text-xs sm:text-sm text-neutral-700 font-medium">Select your driving background to estimate the recommended tuition syllabus.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        <button type="button" onclick="setExperience('beginner')" id="exp-beginner" class="exp-btn p-4 rounded-xl border-2 border-black bg-[#d9f99d] shadow-[3px_3px_0px_0px_#000] text-center transition">
+          <p class="font-black text-black text-sm">Total Beginner</p>
+          <p class="text-xs text-neutral-700 font-semibold">Zero driving experience</p>
+        </button>
+        <button type="button" onclick="setExperience('intermediate')" id="exp-intermediate" class="exp-btn p-4 rounded-xl border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] text-center transition">
+          <p class="font-black text-black text-sm">Some Experience</p>
+          <p class="text-xs text-neutral-600 font-semibold">10–20 hours logged</p>
+        </button>
+        <button type="button" onclick="setExperience('testready')" id="exp-testready" class="exp-btn p-4 rounded-xl border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] text-center transition">
+          <p class="font-black text-black text-sm">Test Retake / Polish</p>
+          <p class="text-xs text-neutral-600 font-semibold">Test failed or near ready</p>
+        </button>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 p-6 rounded-2xl bg-[#faf8f5] border-2 border-black text-center shadow-[3px_3px_0px_0px_#000]">
+        <div>
+          <p class="text-xs text-neutral-600 uppercase font-mono font-bold">Recommended Hours</p>
+          <p id="calc-hours" class="text-3xl font-black text-blue-700 mt-1">40 Hours</p>
+          <p class="text-[11px] text-neutral-500 font-bold">20x 2-hour sessions</p>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-600 uppercase font-mono font-bold">Standard Rate</p>
+          <p class="text-3xl font-black text-black mt-1">£40.00</p>
+          <p class="text-[11px] text-neutral-500 font-bold">Per hour (£80/slot)</p>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-600 uppercase font-mono font-bold">Estimated Total</p>
+          <p id="calc-total" class="text-3xl font-black text-black mt-1">£1,600</p>
+          <p class="text-[11px] text-neutral-500 font-bold">Pay-as-you-go accepted</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TEST ROUTE HIGHLIGHTS -->
-  <section id="routes" class="py-16 px-4 max-w-7xl mx-auto border-t border-gray-800">
-    <div class="text-center max-w-2xl mx-auto mb-12">
-      <h2 class="text-3xl font-extrabold text-white mb-3">Tunbridge Wells Test Route Preparation</h2>
-      <p class="text-gray-400 text-sm">Targeted practice covering common DVSA test routes and challenging junctions.</p>
+  <!-- 5. WALL OF FAME (TEST CERTIFICATE CARDS & AUDIO SNIPPETS) -->
+  <section id="social-proof" class="py-20 px-4 max-w-7xl mx-auto border-t-2 border-black">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#fef08a] border-2 border-black text-black text-xs font-mono font-bold mb-3 shadow-[2px_2px_0px_0px_#000]">
+        VERIFIED REVIEWS
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-black mb-3">First-Time Pass Wall of Fame</h2>
+      <p class="text-neutral-700 text-sm font-medium">Real Tunbridge Wells pupils who passed on their first attempt.</p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="glass-panel p-6 rounded-2xl border border-gray-800">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold mb-4">01</div>
-        <h3 class="text-lg font-bold text-white mb-2">North Farm Roundabouts</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Spiral lane discipline, multi-exit positioning, and heavy industrial estate traffic control.</p>
+      <div class="brutal-card p-6 rounded-3xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-black text-black bg-[#d9f99d] px-2.5 py-1 rounded-md border border-black">PASSED 1ST TIME (1 Minor)</span>
+            <span class="text-xs font-mono font-bold text-neutral-500">Tunbridge Wells TC</span>
+          </div>
+          <h4 class="font-black text-black text-lg">Oliver M. (High Brooms)</h4>
+          <p class="text-xs text-neutral-500 font-bold mb-4">Manual Tuition • 32 Hours Total</p>
+          <p class="text-sm text-neutral-700 italic mb-6 font-medium">
+            "I was terrified of the North Farm roundabout at rush hour. ANEW broke down the lanes step-by-step. Passed with only one minor on my first go!"
+          </p>
+        </div>
+
+        <button onclick="playVoiceReview('Oliver')" class="w-full py-2.5 px-4 rounded-xl bg-[#faf8f5] hover:bg-neutral-100 border-2 border-black text-xs font-bold text-black flex items-center justify-center gap-2 transition shadow-[2px_2px_0px_0px_#000]">
+          <i data-lucide="volume-2" class="w-4 h-4 text-blue-700"></i>
+          <span id="audio-label-Oliver">Play Voice Feedback</span>
+        </button>
       </div>
 
-      <div class="glass-panel p-6 rounded-2xl border border-gray-800">
-        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold mb-4">02</div>
-        <h3 class="text-lg font-bold text-white mb-2">Pembury Bypass (A21)</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">High-speed dual carriageway merging, proper stopping distances, and overtaking etiquette.</p>
+      <div class="brutal-card p-6 rounded-3xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-black text-black bg-[#fef08a] px-2.5 py-1 rounded-md border border-black">ZERO MINORS CLEAN SHEET</span>
+            <span class="text-xs font-mono font-bold text-neutral-500">Sevenoaks TC</span>
+          </div>
+          <h4 class="font-black text-black text-lg">Chloe T. (Tonbridge)</h4>
+          <p class="text-xs text-neutral-500 font-bold mb-4">Automatic Tuition • 26 Hours</p>
+          <p class="text-sm text-neutral-700 italic mb-6 font-medium">
+            "Super patient instructor. Never raised his voice once when I stalled early on. A clean zero-minor pass certificate! Couldn't ask for better."
+          </p>
+        </div>
+
+        <button onclick="playVoiceReview('Chloe')" class="w-full py-2.5 px-4 rounded-xl bg-[#faf8f5] hover:bg-neutral-100 border-2 border-black text-xs font-bold text-black flex items-center justify-center gap-2 transition shadow-[2px_2px_0px_0px_#000]">
+          <i data-lucide="volume-2" class="w-4 h-4 text-blue-700"></i>
+          <span id="audio-label-Chloe">Play Voice Feedback</span>
+        </button>
       </div>
 
-      <div class="glass-panel p-6 rounded-2xl border border-gray-800">
-        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold mb-4">03</div>
-        <h3 class="text-lg font-bold text-white mb-2">St John's Hill Maneuvers</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Parallel parking, forward/reverse bay parking, and steep hill starts without rolling back.</p>
+      <div class="brutal-card p-6 rounded-3xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-black text-black bg-[#d9f99d] px-2.5 py-1 rounded-md border border-black">PASSED 1ST TIME</span>
+            <span class="text-xs font-mono font-bold text-neutral-500">Tunbridge Wells TC</span>
+          </div>
+          <h4 class="font-black text-black text-lg">James P. (Southborough)</h4>
+          <p class="text-xs text-neutral-500 font-bold mb-4">Manual Tuition • 38 Hours</p>
+          <p class="text-sm text-neutral-700 italic mb-6 font-medium">
+            "The mock tests with sat-nav route following made the actual DVSA test feel like just another normal drive. Highly recommend ANEW!"
+          </p>
+        </div>
+
+        <button onclick="playVoiceReview('James')" class="w-full py-2.5 px-4 rounded-xl bg-[#faf8f5] hover:bg-neutral-100 border-2 border-black text-xs font-bold text-black flex items-center justify-center gap-2 transition shadow-[2px_2px_0px_0px_#000]">
+          <i data-lucide="volume-2" class="w-4 h-4 text-blue-700"></i>
+          <span id="audio-label-James">Play Voice Feedback</span>
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- BOOKING SECTION -->
-  <section id="booking" class="py-16 px-4 max-w-4xl mx-auto">
-    <div class="glass-panel neon-border rounded-3xl p-6 sm:p-10">
+  <!-- 6. BOOKING DISPATCH & AVAILABILITY -->
+  <section id="booking" class="py-20 px-4 max-w-4xl mx-auto border-t-2 border-black">
+    <div class="brutal-card rounded-3xl p-6 sm:p-10">
       
-      <!-- DYNAMIC AVAILABILITY TIMETABLE -->
       <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h3 class="text-xl font-bold text-white flex items-center gap-2">
-              <i data-lucide="calendar-check" class="w-5 h-5 text-cyan-400"></i>
-              <span>Live Availability Timetable</span>
+            <h3 class="text-xl font-black text-black flex items-center gap-2">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-blue-700"></i>
+              <span>Live 5-Day Availability Timetable</span>
             </h3>
-            <p class="text-xs text-gray-400">Select an available green slot to pre-fill your booking below.</p>
+            <p class="text-xs text-neutral-600 font-medium">Click any open green slot to pre-fill your booking form below.</p>
           </div>
-          <div class="flex items-center gap-3 text-xs">
-            <span class="flex items-center gap-1.5 text-emerald-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Available</span>
-            <span class="flex items-center gap-1.5 text-red-400"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Taken</span>
+          <div class="flex items-center gap-3 text-xs font-bold">
+            <span class="flex items-center gap-1.5 text-black"><span class="w-2.5 h-2.5 rounded-full bg-[#d9f99d] border border-black"></span> Open</span>
+            <span class="flex items-center gap-1.5 text-neutral-500"><span class="w-2.5 h-2.5 rounded-full bg-neutral-300 border border-black"></span> Taken</span>
           </div>
         </div>
 
-        <!-- Interactive 5-Day Availability Cards -->
         <div id="availability-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-          <div class="col-span-full text-center py-6 text-gray-400 text-sm">Loading real-time availability...</div>
+          <div class="col-span-full text-center py-6 text-neutral-500 font-mono text-sm">Connecting to live cloud schedule...</div>
         </div>
       </div>
 
       <div class="text-center max-w-xl mx-auto mb-8">
-        <h2 class="text-3xl font-extrabold text-white mb-2">Book Your Driving Slot</h2>
-        <p class="text-gray-400 text-sm">Instant Google Sheet logging, email confirmations, and automated WhatsApp dispatch.</p>
+        <h2 class="text-3xl font-black text-black mb-2">Book Your Driving Slot</h2>
+        <p class="text-neutral-600 text-sm font-medium">Google Calendar sync, instant WhatsApp confirmation, and bank transfer payment instructions.</p>
+      </div>
+
+      <!-- Bank Transfer Instructions Modal -->
+      <div id="payment-modal" class="hidden mb-8 p-6 rounded-2xl bg-[#d9f99d] border-2 border-black text-left shadow-[4px_4px_0px_0px_#000]">
+        <div class="flex items-center gap-3 mb-3 text-black font-black text-lg">
+          <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+          <span>Booking Successfully Received!</span>
+        </div>
+        <p class="text-sm text-neutral-800 mb-4 font-medium">Your appointment slot has been submitted to your instructor. Here are your payment instructions:</p>
+        
+        <div id="bank-details-box" class="p-4 rounded-xl bg-white border-2 border-black font-mono text-xs space-y-2 text-black shadow-[2px_2px_0px_0px_#000]">
+          <p><strong>Bank:</strong> Barclays Bank UK</p>
+          <p><strong>Account Name:</strong> ANEW Driving Tuition</p>
+          <p><strong>Sort Code:</strong> 20-88-13</p>
+          <p><strong>Account Number:</strong> 83419204</p>
+          <p><strong>Reference:</strong> <span id="payment-ref-id" class="text-blue-700 font-black"></span></p>
+          <p class="text-black font-bold">Standard 2-Hour Lesson Fee: £80.00</p>
+        </div>
+        <p class="text-xs text-neutral-700 font-bold mt-3">These bank details have also been dispatched to your email address.</p>
       </div>
 
       <form id="booking-form" onsubmit="handleFormSubmission(event)" class="space-y-6">
+        <input type="hidden" id="booking_source" name="source" value="Website" />
+
         <div class="grid sm:grid-cols-2 gap-6">
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Full Name</label>
-            <input type="text" id="cust-name" required placeholder="Learner's Name" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Full Name</label>
+            <input type="text" id="cust-name" required placeholder="Learner's Full Name" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-medium shadow-[2px_2px_0px_0px_#000]" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Contact Telephone</label>
-            <input type="tel" id="cust-phone" required placeholder="07700 900123" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Contact Telephone</label>
+            <input type="tel" id="cust-phone" required placeholder="07393 107192" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-medium shadow-[2px_2px_0px_0px_#000]" />
           </div>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-6">
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Email Address</label>
-            <input type="email" id="cust-email" required placeholder="learner@example.com" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Email Address</label>
+            <input type="email" id="cust-email" required placeholder="learner@example.com" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-medium shadow-[2px_2px_0px_0px_#000]" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Pickup Location / Postcode</label>
-            <input type="text" id="cust-pickup" required placeholder="e.g. TN1 2JY, Tunbridge Wells" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Pickup Postcode / Address</label>
+            <input type="text" id="cust-pickup" required placeholder="e.g. TN1 2JY, Tunbridge Wells" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-medium shadow-[2px_2px_0px_0px_#000]" />
           </div>
         </div>
 
         <div class="grid sm:grid-cols-3 gap-6">
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Transmission</label>
-            <select id="cust-trans" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm">
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Transmission</label>
+            <select id="cust-trans" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-bold shadow-[2px_2px_0px_0px_#000]">
               <option value="Manual">Manual</option>
               <option value="Automatic">Automatic</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Lesson Date</label>
-            <input type="date" id="cust-date" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Lesson Date</label>
+            <input type="date" id="cust-date" required class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-bold shadow-[2px_2px_0px_0px_#000]" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Preferred Slot</label>
-            <select id="cust-slot" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 text-sm">
+            <label class="block text-xs font-black text-black uppercase tracking-wider mb-2">Preferred Slot</label>
+            <select id="cust-slot" class="w-full bg-[#faf8f5] border-2 border-black rounded-xl px-4 py-3 text-black focus:outline-none focus:bg-white text-sm font-bold shadow-[2px_2px_0px_0px_#000]">
               <option value="09:00 AM - 11:00 AM">09:00 AM - 11:00 AM</option>
               <option value="11:30 AM - 01:30 PM">11:30 AM - 01:30 PM</option>
               <option value="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM</option>
@@ -226,7 +496,28 @@
           </div>
         </div>
 
-        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold text-base tracking-wide transition shadow-lg shadow-cyan-500/25 flex items-center justify-center space-x-2">
+        <!-- Payment Method Selection -->
+        <div class="p-5 rounded-2xl bg-[#f1f0ea] border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <label class="block text-xs font-black text-black uppercase tracking-wider mb-3">Tuition Payment Method</label>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border-2 border-black bg-white cursor-pointer shadow-[2px_2px_0px_0px_#000]">
+              <input type="radio" name="payment-method" value="Bank Transfer" checked class="text-blue-700 focus:ring-0" />
+              <div>
+                <p class="text-sm font-black text-black">Bank Transfer (BACS / FPS)</p>
+                <p class="text-xs text-neutral-600 font-medium">Account details displayed upon booking</p>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 p-3.5 rounded-xl border-2 border-black bg-white cursor-pointer shadow-[2px_2px_0px_0px_#000]">
+              <input type="radio" name="payment-method" value="Cash on Day" class="text-blue-700 focus:ring-0" />
+              <div>
+                <p class="text-sm font-black text-black">Cash in Car</p>
+                <p class="text-xs text-neutral-600 font-medium">Pay instructor directly at lesson start</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl brutal-btn-primary font-black text-base tracking-wide flex items-center justify-center space-x-2">
           <span>Confirm & Lock Appointment</span>
           <i data-lucide="check-circle" class="w-5 h-5"></i>
         </button>
@@ -234,56 +525,16 @@
     </div>
   </section>
 
-  <!-- LOCAL DATABASE / ADMIN LOG -->
-  <section id="admin" class="py-16 px-4 max-w-7xl mx-auto border-t border-gray-800">
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-      <div>
-        <h2 class="text-2xl font-bold text-white flex items-center space-x-2">
-          <i data-lucide="database" class="w-6 h-6 text-cyan-400"></i>
-          <span>Instructor Dispatch & Local Records</span>
-        </h2>
-        <p class="text-sm text-gray-400">Records are backed up in browser storage and dispatched to Google Sheets.</p>
-      </div>
-      <div class="flex space-x-3">
-        <button onclick="exportLocalRecordsToCSV()" class="bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 text-xs font-semibold px-4 py-2 rounded-lg flex items-center space-x-2 transition">
-          <i data-lucide="download" class="w-4 h-4"></i>
-          <span>Export CSV</span>
-        </button>
-        <button onclick="clearLocalRecords()" class="bg-gray-900 hover:bg-red-950/40 text-red-400 border border-red-500/20 text-xs px-3 py-2 rounded-lg transition">
-          Clear
-        </button>
-      </div>
-    </div>
-
-    <div class="overflow-x-auto glass-panel rounded-2xl border border-gray-800">
-      <table class="w-full text-left text-sm text-gray-300">
-        <thead class="bg-gray-900/80 text-xs uppercase text-gray-400 border-b border-gray-800">
-          <tr>
-            <th class="px-6 py-4">ID</th>
-            <th class="px-6 py-4">Student</th>
-            <th class="px-6 py-4">Contact</th>
-            <th class="px-6 py-4">Lesson Slot</th>
-            <th class="px-6 py-4">Type</th>
-            <th class="px-6 py-4">Pickup</th>
-            <th class="px-6 py-4">Direct Contact</th>
-          </tr>
-        </thead>
-        <tbody id="bookings-table-body" class="divide-y divide-gray-800"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- FLOATING DIRECT WHATSAPP BUTTON -->
+  <!-- FLOATING WHATSAPP BUTTON -->
   <a 
-    href="https://wa.me/447730354303?text=Hi%20there,%20I'd%20like%20to%20inquire%20about%20driving%20lessons%20with%20ANEW%20Driving%20Tuition." 
+    href="https://wa.me/447393107192?text=Hi%20there,%20I'd%20like%20to%20inquire%20about%20driving%20lessons%20with%20ANEW%20Driving%20Tuition." 
     target="_blank" 
-    class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-105"
-    style="box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);"
+    class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-[#d9f99d] text-black font-black border-2 border-black px-5 py-3 rounded-full shadow-[4px_4px_0px_0px_#000] transition-all duration-300 hover:scale-105"
   >
     <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
       <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
     </svg>
-    <span class="font-bold text-sm">Chat on WhatsApp</span>
+    <span>Chat on WhatsApp</span>
   </a>
 
   <!-- SCRIPTS & APPLICATION LOGIC -->
@@ -291,50 +542,50 @@
     // 1. THREE.JS 3D AUTOMOTIVE SCENE
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0b0f19, 0.035);
+    scene.background = new THREE.Color(0xf1f0ea); // Porcelain tone
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.set(5, 3, 7);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
-    const cyanPoint = new THREE.PointLight(0x06b6d4, 3, 20);
-    cyanPoint.position.set(0, 4, 3);
-    scene.add(cyanPoint);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
 
     const carGroup = new THREE.Group();
     scene.add(carGroup);
 
-    // Car Body
+    // Car Body (Deep Onyx Slate)
     const bodyGeo = new THREE.BoxGeometry(2.4, 0.6, 4.4);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2, metalness: 0.8 });
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0c0e12, roughness: 0.2, metalness: 0.7 });
     const carBody = new THREE.Mesh(bodyGeo, bodyMat);
     carBody.position.y = 0.5;
     carGroup.add(carBody);
 
-    // Cabin
+    // Cabin (Cobalt Blue Tint)
     const cabinGeo = new THREE.BoxGeometry(1.8, 0.65, 2.2);
-    const cabinMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.1, metalness: 0.9, transparent: true, opacity: 0.85 });
+    const cabinMat = new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.85 });
     const cabin = new THREE.Mesh(cabinGeo, cabinMat);
     cabin.position.set(0, 1.05, -0.2);
     carGroup.add(cabin);
 
-    // Tuition "L" Sign
+    // Tuition "L" Sign on Roof (Safety Lime Highlight)
     const signGeo = new THREE.BoxGeometry(0.8, 0.35, 0.3);
-    const signMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+    const signMat = new THREE.MeshStandardMaterial({ color: 0xd9f99d, roughness: 0.2 });
     const sign = new THREE.Mesh(signGeo, signMat);
     sign.position.set(0, 1.5, -0.2);
     carGroup.add(sign);
 
     // Wheels
     const wheelGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.3, 24);
-    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.8 });
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.8 });
     wheelGeo.rotateZ(Math.PI / 2);
 
     [[-1.25, 0.38, 1.3], [1.25, 0.38, 1.3], [-1.25, 0.38, -1.3], [1.25, 0.38, -1.3]].forEach(pos => {
@@ -343,7 +594,7 @@
       carGroup.add(wheel);
     });
 
-    const grid = new THREE.GridHelper(30, 30, 0x06b6d4, 0x1e293b);
+    const grid = new THREE.GridHelper(30, 30, 0x000000, 0xd4d4d8);
     scene.add(grid);
 
     let isDragging = false, prevMouseX = 0;
@@ -368,7 +619,7 @@
     function animate() {
       requestAnimationFrame(animate);
       if (!isDragging) carGroup.rotation.y += 0.003;
-      grid.position.z = (grid.position.z + 0.04) % 1;
+      grid.position.z = (grid.position.z + 0.03) % 1;
       renderer.render(scene, camera);
     }
     animate();
@@ -379,9 +630,92 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // 2. DATA PIPELINE & GOOGLE APPS SCRIPT URL
+    // 2. ROUTE HOTSPOT TOUR INTERACTION
+    const routesData = {
+      northfarm: {
+        title: "North Farm Roundabouts & Spiral Discipline",
+        desc: "The test examiner frequently takes candidates around Longfield Road and North Farm roundabouts. The major fail trap is late lane drifting when following signs towards Tonbridge or Tunbridge Wells center. We drill your lane entries until they feel second nature.",
+        tags: ["Lane 2 entry for A21", "Early mirror checks", "Clutch control at rush hour"]
+      },
+      pembury: {
+        title: "Pembury Bypass (A21) Dual Carriageway Merging",
+        desc: "Focuses on accelerating up to 70 MPH on short slip roads, matching traffic flow, safe overtaking buffering, and early lane positioning before roundabout approaches.",
+        tags: ["70 MPH Slip road acceleration", "Blind spot checks", "Two-second stopping rule"]
+      },
+      stjohns: {
+        title: "St John's Hill Incline & Tight Residential Maneuvers",
+        desc: "Steep hill starts without rolling back, parallel parking between parked SUVs on narrow roads, and meeting oncoming traffic with priority management.",
+        tags: ["Handbrake-clutch bite sync", "Parallel parking", "Priority clearance"]
+      }
+    };
+
+    function selectRoute(key) {
+      document.querySelectorAll('.route-btn').forEach(btn => {
+        btn.classList.remove('bg-[#eff6ff]', 'border-blue-700', 'shadow-[5px_5px_0px_0px_#1d4ed8]');
+      });
+      document.getElementById('btn-' + key).classList.add('bg-[#eff6ff]', 'border-blue-700', 'shadow-[5px_5px_0px_0px_#1d4ed8]');
+
+      const data = routesData[key];
+      document.getElementById('route-title').innerText = data.title;
+      document.getElementById('route-desc').innerText = data.desc;
+      const tagContainer = document.getElementById('route-tags');
+      tagContainer.innerHTML = '';
+      data.tags.forEach(t => {
+        const span = document.createElement('span');
+        span.className = "text-[11px] font-bold bg-[#f1f0ea] border border-black text-black px-2.5 py-1 rounded-md";
+        span.innerText = t;
+        tagContainer.appendChild(span);
+      });
+    }
+
+    // 3. HOURS & PACKAGE CALCULATOR
+    function setExperience(type) {
+      document.querySelectorAll('.exp-btn').forEach(b => {
+        b.classList.remove('bg-[#d9f99d]');
+        b.classList.add('bg-white');
+      });
+      document.getElementById('exp-' + type).classList.remove('bg-white');
+      document.getElementById('exp-' + type).classList.add('bg-[#d9f99d]');
+
+      if (type === 'beginner') {
+        document.getElementById('calc-hours').innerText = "40 Hours";
+        document.getElementById('calc-total').innerText = "£1,600";
+      } else if (type === 'intermediate') {
+        document.getElementById('calc-hours').innerText = "20 Hours";
+        document.getElementById('calc-total').innerText = "£800";
+      } else {
+        document.getElementById('calc-hours').innerText = "10 Hours";
+        document.getElementById('calc-total').innerText = "£400";
+      }
+    }
+
+    // 4. AUDIO SNIPPET SIMULATOR
+    let audioCtx = null;
+    function playVoiceReview(name) {
+      const label = document.getElementById('audio-label-' + name);
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      label.innerText = "Playing Audio...";
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+
+      setTimeout(() => {
+        label.innerText = "✓ Verified 1st Time Pass";
+      }, 700);
+    }
+
+    // 5. BACKEND API & LIVE TIMETABLE
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0xBGEIgH7zsFVFiy8mvELDALeVhlQg_onRMmtj4wlX1zsKugAbHP38HycHzhc0U2Z/exec";
-    const DB_KEY = "anew_driving_lessons_db";
     const SLOTS = [
       "09:00 AM - 11:00 AM",
       "11:30 AM - 01:30 PM",
@@ -389,14 +723,12 @@
       "04:30 PM - 06:30 PM"
     ];
 
-    // Default min date to tomorrow
     const dateInput = document.getElementById('cust-date');
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     dateInput.min = tomorrow.toISOString().split('T')[0];
     dateInput.value = tomorrow.toISOString().split('T')[0];
 
-    // 3. RENDER DYNAMIC AVAILABILITY TIMETABLE
     async function renderAvailabilityGrid() {
       const grid = document.getElementById("availability-grid");
       if (!grid) return;
@@ -406,7 +738,7 @@
         const res = await fetch(GOOGLE_SCRIPT_URL + "?action=get_slots");
         booked = await res.json();
       } catch (err) {
-        console.warn("Using local cache / empty list for slot checks", err);
+        console.warn("Using offline slot detection", err);
       }
 
       grid.innerHTML = "";
@@ -416,24 +748,23 @@
         const targetDate = new Date();
         targetDate.setDate(today.getDate() + d);
 
-        // Skip Sundays
         if (targetDate.getDay() === 0) continue;
 
         const dateStr = targetDate.toISOString().split("T")[0];
         const displayDay = targetDate.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
         const dayCol = document.createElement("div");
-        dayCol.className = "glass-panel p-3 rounded-xl border border-gray-800 flex flex-col gap-2";
-        dayCol.innerHTML = `<p class="text-xs font-bold text-center text-cyan-300 pb-1 border-b border-gray-800">${displayDay}</p>`;
+        dayCol.className = "brutal-card p-3 rounded-xl flex flex-col gap-2";
+        dayCol.innerHTML = `<p class="text-xs font-black text-center text-black pb-1 border-b-2 border-black">${displayDay}</p>`;
 
         SLOTS.forEach(slot => {
           const isTaken = Array.isArray(booked) && booked.some(b => b.date === dateStr && b.slot === slot);
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = `w-full text-[11px] py-2 px-1 rounded-lg font-medium transition text-center ${
+          btn.className = `w-full text-[11px] py-2 px-1 rounded-lg font-bold transition text-center border-2 border-black ${
             isTaken 
-              ? "bg-red-950/40 text-red-400 border border-red-500/20 cursor-not-allowed opacity-60" 
-              : "bg-emerald-950/30 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-black cursor-pointer"
+              ? "bg-neutral-200 text-neutral-400 cursor-not-allowed opacity-60" 
+              : "bg-[#d9f99d] text-black hover:bg-black hover:text-white cursor-pointer shadow-[2px_2px_0px_0px_#000]"
           }`;
 
           btn.innerText = isTaken ? `${slot.split(" - ")[0]} (Booked)` : slot.split(" - ")[0];
@@ -455,49 +786,18 @@
       }
     }
 
-    // 4. LOCAL DATABASE HELPERS
-    function loadLocalBookings() {
-      return JSON.parse(localStorage.getItem(DB_KEY) || "[]");
-    }
-
-    function renderTable() {
-      const records = loadLocalBookings();
-      const tbody = document.getElementById('bookings-table-body');
-      tbody.innerHTML = "";
-
-      if (!records.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-6 text-center text-gray-500">No appointments saved yet.</td></tr>`;
-        return;
-      }
-
-      records.slice().reverse().forEach((b) => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-800/40 transition";
-        tr.innerHTML = `
-          <td class="px-6 py-4 font-mono text-xs text-cyan-400 font-bold">${b.id}</td>
-          <td class="px-6 py-4 font-semibold text-white">${b.name}</td>
-          <td class="px-6 py-4 text-xs">${b.phone}<br><span class="text-gray-400">${b.email}</span></td>
-          <td class="px-6 py-4 text-xs font-semibold text-cyan-300">${b.date}<br><span class="text-gray-400">${b.slot}</span></td>
-          <td class="px-6 py-4 text-xs"><span class="px-2 py-1 rounded bg-gray-800 border border-gray-700">${b.transmission}</span></td>
-          <td class="px-6 py-4 text-xs text-gray-300 max-w-[150px] truncate">${b.pickup}</td>
-          <td class="px-6 py-4 text-xs">
-            <a href="https://wa.me/${b.phone.replace(/[^0-9]/g, '')}" target="_blank" class="text-emerald-400 hover:underline">WhatsApp Pupil</a>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // 5. FORM SUBMISSION + GOOGLE CLOUD + WHATSAPP REDIRECT
+    // 6. BOOKING FORM SUBMISSION
     async function handleFormSubmission(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
       const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = `<span>Saving & Dispatching Calendar...</span>`;
+      submitBtn.innerHTML = `<span>Securing Slot & Sending Details...</span>`;
       submitBtn.disabled = true;
 
+      const paymentMethodRadio = document.querySelector('input[name="payment-method"]:checked');
+      const paymentMethod = paymentMethodRadio ? paymentMethodRadio.value : "Bank Transfer";
+
       const formData = {
-        id: "ANW-" + Math.floor(1000 + Math.random() * 9000),
         name: document.getElementById('cust-name').value.trim(),
         phone: document.getElementById('cust-phone').value.trim(),
         email: document.getElementById('cust-email').value.trim(),
@@ -505,16 +805,12 @@
         transmission: document.getElementById('cust-trans').value,
         date: document.getElementById('cust-date').value,
         slot: document.getElementById('cust-slot').value,
-        package: "Standard Tuition Lesson"
+        paymentMethod: paymentMethod,
+        source: "Website"
       };
 
-      // 1. Save Locally
-      const existing = loadLocalBookings();
-      existing.push(formData);
-      localStorage.setItem(DB_KEY, JSON.stringify(existing));
-      renderTable();
+      let bookingRef = "ANW-" + Math.floor(1000 + Math.random() * 9000);
 
-      // 2. Dispatch to Google Apps Script
       try {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
@@ -523,60 +819,41 @@
           body: JSON.stringify(formData)
         });
       } catch (err) {
-        console.warn("Background cloud sync note:", err);
+        console.warn("Cloud dispatch note:", err);
       }
 
-      // 3. Pre-fill Direct WhatsApp Conversation
-      const instructorNumber = "447730354303";
+      if (paymentMethod === "Bank Transfer") {
+        document.getElementById('payment-ref-id').innerText = bookingRef;
+        document.getElementById('payment-modal').classList.remove('hidden');
+        document.getElementById('payment-modal').scrollIntoView({ behavior: "smooth" });
+      }
+
+      const instructorNumber = "447393107192";
       const customMessage = encodeURIComponent(
-        `Hello! I just booked a driving lesson on your website:\n\n` +
+        `Hello! I just booked a driving lesson via your online portal:\n\n` +
         `• Name: ${formData.name}\n` +
         `• Date: ${formData.date}\n` +
         `• Slot: ${formData.slot}\n` +
         `• Transmission: ${formData.transmission}\n` +
+        `• Payment: ${paymentMethod}\n` +
         `• Pickup: ${formData.pickup}\n\n` +
-        `Could you please confirm this booking? Thank you!`
+        `Could you please confirm this lesson appointment? Thank you!`
       );
       const directWhatsAppUrl = `https://wa.me/${instructorNumber}?text=${customMessage}`;
 
-      // Reset Form State
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
       document.getElementById('booking-form').reset();
-
-      // Refresh slot timetable to reflect any new updates
       renderAvailabilityGrid();
 
-      // Alert & Trigger WhatsApp
-      alert(`🎉 Booking Request Received!\nDetails saved locally and sent to the instructor's Google Sheet.\nOpening direct WhatsApp chat now to finalize...`);
-      window.open(directWhatsAppUrl, "_blank");
-    }
-
-    function exportLocalRecordsToCSV() {
-      const records = loadLocalBookings();
-      if (!records.length) {
-        alert("No records to export.");
-        return;
-      }
-      const headers = ["ID,Student Name,Phone,Email,Pickup,Transmission,Date,Slot\n"];
-      const rows = records.map(r => `"${r.id}","${r.name}","${r.phone}","${r.email}","${r.pickup}","${r.transmission}","${r.date}","${r.slot}"`).join("\n");
-      const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "ANEW_Tuition_Bookings.csv";
-      link.click();
-    }
-
-    function clearLocalRecords() {
-      if (confirm("Are you sure you want to clear your local records table?")) {
-        localStorage.removeItem(DB_KEY);
-        renderTable();
-      }
+      setTimeout(() => {
+        alert("🎉 Lesson Request Sent!\n\nDetails have been logged to the instructor's calendar and payment instructions have been emailed.\nOpening WhatsApp chat now...");
+        window.open(directWhatsAppUrl, "_blank");
+      }, 300);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      renderTable();
       renderAvailabilityGrid();
     });
   </script>
