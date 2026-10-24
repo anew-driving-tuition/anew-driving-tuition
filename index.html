@@ -30,7 +30,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Neo-Brutalist clean tech borders */
     .brutal-card {
       background: var(--card-white);
       border: 2px solid var(--ink-black);
@@ -158,7 +157,7 @@
       </div>
     </div>
 
-    <!-- 3D Vehicle Interactive Studio -->
+    <!-- 3D Vehicle Studio -->
     <div class="lg:w-1/2 w-full h-[450px] lg:h-[520px] relative rounded-3xl overflow-hidden border-2 border-black bg-[#f1f0ea] shadow-[6px_6px_0px_0px_#000]">
       <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
       
@@ -542,7 +541,7 @@
     // 1. THREE.JS 3D AUTOMOTIVE SCENE
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf1f0ea); // Porcelain tone
+    scene.background = new THREE.Color(0xf1f0ea);
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.set(5, 3, 7);
@@ -562,21 +561,21 @@
     const carGroup = new THREE.Group();
     scene.add(carGroup);
 
-    // Car Body (Deep Onyx Slate)
+    // Car Body
     const bodyGeo = new THREE.BoxGeometry(2.4, 0.6, 4.4);
     const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0c0e12, roughness: 0.2, metalness: 0.7 });
     const carBody = new THREE.Mesh(bodyGeo, bodyMat);
     carBody.position.y = 0.5;
     carGroup.add(carBody);
 
-    // Cabin (Cobalt Blue Tint)
+    // Cabin
     const cabinGeo = new THREE.BoxGeometry(1.8, 0.65, 2.2);
     const cabinMat = new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.85 });
     const cabin = new THREE.Mesh(cabinGeo, cabinMat);
     cabin.position.set(0, 1.05, -0.2);
     carGroup.add(cabin);
 
-    // Tuition "L" Sign on Roof (Safety Lime Highlight)
+    // Tuition "L" Sign on Roof
     const signGeo = new THREE.BoxGeometry(0.8, 0.35, 0.3);
     const signMat = new THREE.MeshStandardMaterial({ color: 0xd9f99d, roughness: 0.2 });
     const sign = new THREE.Mesh(signGeo, signMat);
